@@ -6,26 +6,28 @@
  * work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
  */
 
-package cl.uchile.dcc.finalreality.model.character.player;
+package cl.uchile.dcc.finalreality.model.character.player.mage;
 
 import cl.uchile.dcc.finalreality.exceptions.InvalidStatValueException;
 import cl.uchile.dcc.finalreality.model.character.GameCharacter;
+import cl.uchile.dcc.finalreality.model.character.player.PlayerCharacter;
+import cl.uchile.dcc.finalreality.model.object.weapon.Weapon;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link PlayerCharacter} that can equip {@code Sword}s,{@code Knife}s and
- * {@code Bow}s.
+ * A {@link PlayerCharacter} that can equip {@code Staff}s and use <i>white magic</i>.
  *
  * @author <a href="https://www.github.com/r8vnhill">R8V</a>
  * @author ~Your name~
- * @version 2.0
  */
-public class Thief extends AbstractPlayerCharacter {
+public class WhiteMage extends AbstractMage {
+
+
 
   /**
-   * Creates a new Thief.
+   * Creates a new character.
    *
    * @param name
    *     the character's name
@@ -35,16 +37,13 @@ public class Thief extends AbstractPlayerCharacter {
    *     the character's defense
    * @param turnsQueue
    *     the queue with the characters waiting for their turn
+   * @param maxMp
+   *     the character's max mp
    */
-  public Thief(final @NotNull String name, final int maxHp, final int defense,
-      final @NotNull BlockingQueue<GameCharacter> turnsQueue)
+  public WhiteMage(final @NotNull String name, final int maxHp, final int defense,
+      int maxMp, final @NotNull BlockingQueue<GameCharacter> turnsQueue)
       throws InvalidStatValueException {
-    super(name, maxHp, defense, turnsQueue);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(Thief.class, name, maxHp, defense);
+    super(name, maxHp, defense, maxMp, turnsQueue);
   }
 
   @Override
@@ -52,17 +51,34 @@ public class Thief extends AbstractPlayerCharacter {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof final Thief that)) {
+    if (!(o instanceof final WhiteMage that)) {
       return false;
     }
     return hashCode() == that.hashCode()
+        && maxMp == that.maxMp
         && name.equals(that.name)
         && maxHp == that.maxHp
         && defense == that.defense;
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(WhiteMage.class, name, maxHp, defense, maxMp);
+  }
+
+  @Override
   public String toString() {
-    return "Thief{maxHp=%d, defense=%d, name='%s'}".formatted(maxHp, defense, name);
+    return "WhiteMage{name='%s', maxHp='%d', defense='%d', maxMp='%d'}"
+        .formatted(name, maxHp, defense, maxMp);
+  }
+
+
+
+
+
+
+  @Override
+  public void equip(Weapon weapon) {
+    this.equippedWeapon = weapon;
   }
 }

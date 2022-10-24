@@ -6,28 +6,28 @@
  * work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
  */
 
-package cl.uchile.dcc.finalreality.model.character.player;
+package cl.uchile.dcc.finalreality.model.character.player.mage;
 
 import cl.uchile.dcc.finalreality.exceptions.InvalidStatValueException;
 import cl.uchile.dcc.finalreality.exceptions.Require;
 import cl.uchile.dcc.finalreality.model.character.GameCharacter;
+import cl.uchile.dcc.finalreality.model.object.weapon.Weapon;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link PlayerCharacter} that can equip {@code Staff}s and use <i>white magic</i>.
+ * A Black Mage is a type of player character that can cast black magic.
  *
  * @author <a href="https://www.github.com/r8vnhill">R8V</a>
  * @author ~Your name~
+ * @version 2.0
  */
-public class WhiteMage extends AbstractPlayerCharacter {
+public class BlackMage extends AbstractMage {
 
-  private int currentMp;
-  private final int maxMp;
 
   /**
-   * Creates a new character.
+   * Creates a new Black Mage.
    *
    * @param name
    *     the character's name
@@ -37,61 +37,48 @@ public class WhiteMage extends AbstractPlayerCharacter {
    *     the character's defense
    * @param turnsQueue
    *     the queue with the characters waiting for their turn
+   * @param maxMp
+   *     the character's max mp
    */
-  protected WhiteMage(final @NotNull String name, final int maxHp, final int defense,
+  public BlackMage(final @NotNull String name, final int maxHp, final int defense,
       int maxMp, final @NotNull BlockingQueue<GameCharacter> turnsQueue)
       throws InvalidStatValueException {
-    super(name, maxHp, defense, turnsQueue);
-    this.maxMp = maxMp;
-    this.currentMp = maxMp;
+    super(name, maxHp, defense, maxMp, turnsQueue);
+    Require.statValueAtLeast(0, maxMp, "Max MP");
   }
 
+
+
+  // region : UTILITY METHODS
   @Override
   public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof final WhiteMage that)) {
+    if (!(o instanceof final BlackMage that)) {
       return false;
     }
     return hashCode() == that.hashCode()
-        && maxMp == that.maxMp
         && name.equals(that.name)
         && maxHp == that.maxHp
-        && defense == that.defense;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(WhiteMage.class, name, maxHp, defense, maxMp);
+        && defense == that.defense
+        && maxMp == that.maxMp;
   }
 
   @Override
   public String toString() {
-    return "WhiteMage{maxMp=%d, maxHp=%d, defense=%d, name='%s'}"
-        .formatted(maxMp, maxHp, defense, name);
+    return "BlackMage{name='%s', maxHp='%d', defense='%d', maxMp='%d'}"
+        .formatted(name, maxHp, defense, maxMp);
   }
 
-  /**
-   * Returns the current MP of the character.
-   */
-  public int getCurrentMp() {
-    return currentMp;
+  @Override
+  public int hashCode() {
+    return Objects.hash(BlackMage.class, name, maxHp, defense, maxMp);
   }
 
-  /**
-   * Sets the current MP of the character to {@code newMp}.
-   */
-  public void setCurrentMp(final int newMp) throws InvalidStatValueException {
-    Require.statValueAtLeast(0, newMp, "Current MP");
-    Require.statValueAtMost(maxMp, newMp, "Current MP");
-    this.currentMp = newMp;
+  @Override
+  public void equip(Weapon weapon) {
+    this.equippedWeapon = weapon;
   }
-
-  /**
-   * Returns the max MP of the character.
-   */
-  public int getMaxMp() {
-    return maxMp;
-  }
+  // endregion
 }

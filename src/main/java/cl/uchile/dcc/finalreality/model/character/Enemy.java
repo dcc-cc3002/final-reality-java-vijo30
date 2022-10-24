@@ -4,6 +4,8 @@ import cl.uchile.dcc.finalreality.exceptions.InvalidStatValueException;
 import cl.uchile.dcc.finalreality.exceptions.Require;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 public class Enemy extends AbstractCharacter {
 
   private final int weight;
+
+
+
 
   /**
    * Creates a new enemy with a name, a weight and the queue with the characters ready to
@@ -53,5 +58,22 @@ public class Enemy extends AbstractCharacter {
   @Override
   public int hashCode() {
     return Objects.hash(Enemy.class, name, weight, maxHp, defense);
+  }
+
+  @Override
+  public String toString() {
+    return "Enemy{name=%s, weight=%d, maxHp='%d', defense='%d'}"
+        .formatted(name, weight, maxHp, defense);
+  }
+
+  /**
+   Sets waitTurn depending on the class.
+   */
+  public void setWaitTurn() {
+    scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+    scheduledExecutor.schedule(
+        /* command = */ this::addToQueue,
+        /* delay = */ this.getWeight() / 10,
+        /* unit = */ TimeUnit.SECONDS);
   }
 }
