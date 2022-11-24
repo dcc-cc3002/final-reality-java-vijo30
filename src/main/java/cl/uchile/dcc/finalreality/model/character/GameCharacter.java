@@ -1,6 +1,11 @@
 package cl.uchile.dcc.finalreality.model.character;
 
+import cl.uchile.dcc.finalreality.driver.FinalReality;
+import cl.uchile.dcc.finalreality.exceptions.InvalidSkillException;
 import cl.uchile.dcc.finalreality.exceptions.InvalidStatValueException;
+import cl.uchile.dcc.finalreality.model.character.states.State;
+import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This represents a character from the game.
@@ -41,4 +46,46 @@ public interface GameCharacter {
    * Sets this character's current HP to {@code newHp}.
    */
   void setCurrentHp(int hp) throws InvalidStatValueException;
+
+  int getTurn();
+
+  void setTurn(int value);
+
+  int getTurnEffect();
+
+  void setTurnEffect(int value);
+
+
+  /**
+   * Sets wait turn depending on the case.
+   */
+  void setWaitTurn();
+
+  LinkedBlockingQueue<GameCharacter> getQueue();
+
+  void execute(FinalReality finalReality, GameCharacter character) throws IOException,
+      InvalidStatValueException, InvalidSkillException;
+
+  @SuppressWarnings("checkstyle:ParameterName")
+  void setState(State aState);
+
+  void paralyze();
+
+  void burn();
+
+  void poison();
+
+  void undo();
+
+  boolean isParalyzed();
+
+  boolean isBurned();
+
+  boolean isPoisoned();
+
+  boolean isNormal();
+
+  void attack(GameCharacter gameCharacter) throws InvalidStatValueException;
+
+  void applyEffect() throws InvalidStatValueException;
 }
